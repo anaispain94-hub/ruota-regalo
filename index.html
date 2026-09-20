@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>La Ruota della Fortuna 🎁</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #fff7f5;
+  color: #222;
+}
+
+h1 {
+  margin: 0 20px 35px;
+  text-align: center;
+  font-size: 32px;
+}
+
+/* CONTENITORE RUOTA */
+
+.wheel-container {
+  position: relative;
+
+  width: 350px;
+  height: 350px;
+}
+
+/* RUOTA */
+
+#wheel {
+  width: 350px;
+  height: 350px;
+
+  border-radius: 50%;
+
+  /* BORDO ESTERNO ROSSO */
+  border: 14px solid #D60000;
+
+  box-shadow:
+    0 7px 18px rgba(0,0,0,.25),
+    inset 0 0 0 3px rgba(255,255,255,.35);
+
+  transition: transform 5s cubic-bezier(.12,.70,.15,1);
+}
+
+/* FRECCIA */
+
+.pointer {
+  position: absolute;
+
+  top: -24px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 10;
+
+  width: 0;
+  height: 0;
+
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+
+  /* FRECCIA BIANCA */
+  border-top: 43px solid white;
+
+  filter:
+    drop-shadow(0px 2px 1px #D60000)
+    drop-shadow(0px 3px 3px rgba(0,0,0,.35));
+}
+
+/* PULSANTE */
+
+button {
+  margin-top: 45px;
+
+  padding: 16px 42px;
+
+  border: 0;
+  border-radius: 100px;
+
+  background: #D60000;
+  color: white;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+
+  transition: transform .15s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: default;
+}
+
+#result {
+  height: 50px;
+
+  margin-top: 28px;
+
+  font-size: 28px;
+  font-weight: 900;
+
+  color: #D60000;
+
+  text-align: center;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<h1>🎁 GIRA LA RUOTA 🎁</h1>
+
+
+<div class="wheel-container">
+
+  <div class="pointer"></div>
+
+  <canvas
+    id="wheel"
+    width="700"
+    height="700">
+  </canvas>
+
+</div>
+
+
+<button id="spinButton" onclick="spin()">
+  GIRA!
+</button>
+
+
+<div id="result"></div>
+
+
+
+<script>
+
+/* ==========================
+   PREMI
+========================== */
+
+const prizes = [
+  "104€",
+  "200€",
+  "Un abbraccio",
+  "Pat-Pat",
+  "Miao",
+  "200€",
+  "Cena fuori",
+  "5€"
+];
+
+
+/* ==========================
+   COLORI DEGLI SPICCHI
+========================== */
+
+const colors = [
+
+  "#C9A7FF", // lilla
+  "#A8E600", // verde mela
+  "#FFD93D", // giallo
+  "#26D9D1", // turchese
+
+  "#F72585", // magenta
+  "#B79AFF", // lilla più intenso
+  "#C7F000", // verde mela chiaro
+  "#FFCA28"  // giallo caldo
+
+];
+
+
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+
+const size = canvas.width;
+const center = size / 2;
+
+const radius = center;
+
+const sliceAngle =
+  (Math.PI * 2) / prizes.length;
+
+
+/* ==========================
+   DISEGNA RUOTA
+========================== */
+
+function drawWheel() {
+
+  ctx.clearRect(0, 0, size, size);
+
+  prizes.forEach((prize, i) => {
+
+    /*
+      Lo spicchio 1 parte esattamente
+      dalla parte superiore della ruota.
+    */
+
+    const start =
+      -Math.PI / 2 +
+      i * sliceAngle;
+
+    const end =
+      start + sliceAngle;
+
+
+    /* SPICCHIO */
+
+    ctx.beginPath();
+
+    ctx.moveTo(center, center);
+
+    ctx.arc(
+      center,
+      center,
+      radius,
+      start,
+      end
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = colors[i];
+
+    ctx.fill();
+
+
+    /* DIVISIONE BIANCA */
+
+    ctx.strokeStyle =
+      "rgba(255,255,255,.85)";
+
+    ctx.lineWidth = 5;
+
+    ctx.stroke();
+
+
+    /* TESTO */
+
+    const middle =
+      start + sliceAngle / 2;
+
+    const textRadius =
+      radius * 0.64;
+
+    const x =
+      center +
+      Math.cos(middle) *
+      textRadius;
+
+    const y =
+      center +
+      Math.sin(middle) *
+      textRadius;
+
+
+    ctx.save();
+
+    ctx.translate(x, y);
+
+    /*
+      Ombra leggera per rendere
+      leggibile il testo
+    */
+
+    ctx.shadowColor =
+      "rgba(255,255,255,.8)";
+
+    ctx.shadowBlur = 8;
+
+    ctx.fillStyle = "#24152F";
+
+    ctx.font =
+      prize.length > 10
+      ? "bold 28px Arial"
+      : "bold 34px Arial";
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(prize, 0, 0);
+
+    ctx.restore();
+
+  });
+
+
+  /* CERCHIO CENTRALE */
+
+  ctx.beginPath();
+
+  ctx.arc(
+    center,
+    center,
+    54,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle = "#D60000";
+
+  ctx.fill();
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    center,
+    center,
+    27,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle = "white";
+
+  ctx.fill();
+
+}
+
+
+drawWheel();
+
+
+
+/* ==========================
+   ROTAZIONE
+========================== */
+
+let rotation = 0;
+let spinning = false;
+
+
+function spin() {
+
+  if (spinning) return;
+
+  spinning = true;
+
+
+  const button =
+    document.getElementById("spinButton");
+
+  const result =
+    document.getElementById("result");
+
+
+  button.disabled = true;
+
+  result.innerHTML = "";
+
+
+  /*
+     INDICI DELLE DUE CASELLE 200 €
+
+     1 = secondo spicchio
+     5 = sesto spicchio
+  */
+
+  const winningSlices = [1, 5];
+
+
+  /*
+     Ne scegliamo casualmente uno.
+
+     In questo modo non sembra
+     programmata per fermarsi
+     sempre nello stesso posto.
+  */
+
+  const targetIndex =
+    winningSlices[
+      Math.floor(
+        Math.random() *
+        winningSlices.length
+      )
+    ];
+
+
+  /*
+     Ogni spicchio è 45°.
+
+     Il centro dello spicchio è:
+     22.5° + posizione × 45°
+  */
+
+  const sliceDegrees = 45;
+
+  const centerAngle =
+    22.5 +
+    targetIndex *
+    sliceDegrees;
+
+
+  /*
+     Aggiungiamo una piccola variazione
+     casuale.
+
+     Quindi la freccia non finisce
+     sempre esattamente al centro
+     del 200 €.
+  */
+
+  const randomOffset =
+    Math.random() * 20 - 10;
+
+
+  const targetAngle =
+    centerAngle +
+    randomOffset;
+
+
+  /*
+     Orientamento finale necessario
+     per avere quel punto sotto
+     la freccia.
+  */
+
+  const desiredRotation =
+    (360 - targetAngle) % 360;
+
+
+  /*
+     Orientamento attuale
+  */
+
+  const currentPosition =
+    ((rotation % 360) + 360) % 360;
+
+
+  /*
+     Calcola quanto deve ancora
+     girare per raggiungere
+     esattamente il 200 €
+  */
+
+  const correction =
+    (
+      desiredRotation -
+      currentPosition +
+      360
+    ) % 360;
+
+
+  /*
+     Fa casualmente da 6 a 8
+     giri completi.
+  */
+
+  const fullSpins =
+    6 +
+    Math.floor(Math.random() * 3);
+
+
+  rotation +=
+    fullSpins * 360 +
+    correction;
+
+
+  canvas.style.transform =
+    `rotate(${rotation}deg)`;
+
+
+  /*
+     RISULTATO
+  */
+
+  setTimeout(() => {
+
+    result.innerHTML =
+      "🎉 HAI VINTO 200€! 🎉";
+
+    button.disabled = false;
+
+    spinning = false;
+
+  }, 5100);
+
+}
+
+</script>
+
+</body>
+</html>
