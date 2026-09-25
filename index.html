@@ -2,125 +2,231 @@
 <html lang="it">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Ruota della Fortuna 🎁</title>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>LA RUOTA DELLA FORTUNA 🎁</title>
+
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
+
       min-height: 100vh;
+
       display: flex;
       flex-direction: column;
+
       align-items: center;
       justify-content: center;
+
       font-family: Arial, Helvetica, sans-serif;
+
       background: #fff7f5;
+
       color: #222;
+
       overflow-x: hidden;
     }
 
+
     h1 {
       margin: 0 20px 35px;
+
       text-align: center;
+
       font-size: 32px;
+
+      font-weight: 900;
     }
+
+
+    /* =========================
+       CONTENITORE RUOTA
+    ========================= */
 
     .wheel-container {
       position: relative;
+
       width: 350px;
       height: 350px;
     }
+
+
+    /* =========================
+       RUOTA
+    ========================= */
 
     #wheel {
       width: 350px;
       height: 350px;
+
       border-radius: 50%;
+
       border: 14px solid #D60000;
+
       box-shadow:
         0 7px 18px rgba(0,0,0,.25),
         inset 0 0 0 3px rgba(255,255,255,.35);
-      transition: transform 5s cubic-bezier(.12,.70,.15,1);
+
+      transition:
+        transform 5s cubic-bezier(.12,.70,.15,1);
     }
+
+
+    /* =========================
+       FRECCIA BIANCA
+    ========================= */
 
     .pointer {
       position: absolute;
+
       top: -24px;
       left: 50%;
+
       transform: translateX(-50%);
+
       z-index: 10;
+
       width: 0;
       height: 0;
+
       border-left: 22px solid transparent;
       border-right: 22px solid transparent;
+
       border-top: 43px solid white;
+
       filter:
         drop-shadow(0px 2px 1px #D60000)
         drop-shadow(0px 3px 3px rgba(0,0,0,.35));
     }
 
+
+    /* =========================
+       PULSANTE
+    ========================= */
+
     button {
       margin-top: 45px;
+
       padding: 16px 42px;
+
       border: 0;
+
       border-radius: 100px;
+
       background: #D60000;
+
       color: white;
+
       font-size: 20px;
-      font-weight: bold;
+
+      font-weight: 900;
+
       cursor: pointer;
-      box-shadow: 0 5px 10px rgba(0,0,0,.2);
-      transition: transform .15s;
+
+      box-shadow:
+        0 5px 10px rgba(0,0,0,.2);
+
+      transition:
+        transform .15s;
     }
+
 
     button:hover {
       transform: scale(1.05);
     }
 
+
     button:active {
       transform: scale(.97);
     }
+
 
     button:disabled {
       opacity: .6;
       cursor: default;
     }
 
+
+    /* =========================
+       RISULTATO
+    ========================= */
+
     #result {
-      min-height: 50px;
+      min-height: 60px;
+
       margin-top: 28px;
+
       font-size: 28px;
+
       font-weight: 900;
+
       color: #D60000;
+
       text-align: center;
+
       padding: 0 20px;
     }
 
+
+    /* =========================
+       CORIANDOLI
+    ========================= */
+
     .confetti {
       position: fixed;
+
       top: -20px;
+
       width: 10px;
       height: 16px;
+
       opacity: 0.95;
-      animation: fall linear forwards;
+
+      animation:
+        fall linear forwards;
+
       z-index: 9999;
+
       pointer-events: none;
     }
 
+
     @keyframes fall {
+
       0% {
-        transform: translateY(0) rotate(0deg);
+        transform:
+          translateY(0)
+          rotate(0deg);
       }
+
       100% {
-        transform: translateY(110vh) rotate(720deg);
+        transform:
+          translateY(110vh)
+          rotate(720deg);
       }
+
     }
 
+
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media (max-width: 420px) {
+
       h1 {
         font-size: 26px;
       }
@@ -134,308 +240,1224 @@
         width: 320px;
         height: 320px;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <h1>🎁 GIRA LA RUOTA 🎁</h1>
 
+
   <div class="wheel-container">
+
     <div class="pointer"></div>
-    <canvas id="wheel" width="700" height="700"></canvas>
+
+    <canvas
+      id="wheel"
+      width="700"
+      height="700">
+    </canvas>
+
   </div>
 
-  <button id="spinButton" onclick="spin()">GIRA!</button>
+
+  <button
+    id="spinButton"
+    onclick="spin()">
+
+    GIRA!
+
+  </button>
+
 
   <div id="result"></div>
 
+
+
   <script>
+
+
+    /* =================================
+       PREMI
+
+       Le scritte lunghe vengono
+       divise su due righe.
+    ================================= */
+
     const prizes = [
-      "Un abbraccio",
-      "Uno spritz",
-      "110€ su TicketOne",
-      "Un banjo",
-      "La settimana enigmistica",
-      "200€ cash",
-      "Ingresso al cinema",
-      "5€ spicci"
+
+      {
+        lines: ["UN ABBRACCIO"],
+        fontSize: 27
+      },
+
+      {
+        lines: ["UNO SPRITZ"],
+        fontSize: 29
+      },
+
+      {
+        lines: ["110€ SU", "TICKETONE"],
+        fontSize: 28
+      },
+
+      {
+        lines: ["UN BANJO"],
+        fontSize: 30
+      },
+
+      {
+        lines: ["LA SETTIMANA", "ENIGMISTICA"],
+        fontSize: 24
+      },
+
+      {
+        lines: ["200€ CASH"],
+        fontSize: 30
+      },
+
+      {
+        lines: ["INGRESSO", "AL CINEMA"],
+        fontSize: 27
+      },
+
+      {
+        lines: ["5€"],
+        fontSize: 36
+      }
+
     ];
+
+
+
+    /* =================================
+       COLORI
+
+       2 LILLA
+       2 VERDE MELA
+       2 GIALLI
+       2 TURCHESI
+    ================================= */
 
     const colors = [
+
       "#C9A7FF", // lilla
+
       "#A8E600", // verde mela
+
       "#FFD93D", // giallo
+
       "#26D9D1", // turchese
-      "#B79AFF", // lilla 2
-      "#C7F000", // verde mela 2
-      "#FFCA28", // giallo 2
-      "#57DCE2"  // turchese 2
+
+      "#B79AFF", // lilla
+
+      "#C7F000", // verde mela
+
+      "#FFCA28", // giallo
+
+      "#57DCE2"  // turchese
+
     ];
 
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
 
-    const size = canvas.width;
-    const center = size / 2;
-    const radius = center;
-    const sliceAngle = (Math.PI * 2) / prizes.length;
+
+    /* =================================
+       CANVAS
+    ================================= */
+
+    const canvas =
+      document.getElementById("wheel");
+
+
+    const ctx =
+      canvas.getContext("2d");
+
+
+    const size =
+      canvas.width;
+
+
+    const center =
+      size / 2;
+
+
+    const radius =
+      center;
+
+
+    const sliceAngle =
+      (Math.PI * 2) /
+      prizes.length;
+
+
+
+    /* =================================
+       DISEGNA LA RUOTA
+    ================================= */
 
     function drawWheel() {
-      ctx.clearRect(0, 0, size, size);
 
-      prizes.forEach((prize, i) => {
-        const start = -Math.PI / 2 + i * sliceAngle;
-        const end = start + sliceAngle;
 
-        ctx.beginPath();
-        ctx.moveTo(center, center);
-        ctx.arc(center, center, radius, start, end);
-        ctx.closePath();
-        ctx.fillStyle = colors[i];
-        ctx.fill();
+      ctx.clearRect(
+        0,
+        0,
+        size,
+        size
+      );
 
-        ctx.strokeStyle = "rgba(255,255,255,.85)";
-        ctx.lineWidth = 5;
-        ctx.stroke();
 
-        const middle = start + sliceAngle / 2;
-        const textRadius = radius * 0.64;
-        const x = center + Math.cos(middle) * textRadius;
-        const y = center + Math.sin(middle) * textRadius;
+      prizes.forEach(
+        (prize, i) => {
 
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.shadowColor = "rgba(255,255,255,.8)";
-        ctx.shadowBlur = 8;
-        ctx.fillStyle = "#24152F";
 
-        if (prize.length > 22) {
-          ctx.font = "bold 22px Arial";
-        } else if (prize.length > 14) {
-          ctx.font = "bold 25px Arial";
-        } else {
-          ctx.font = "bold 30px Arial";
+          const start =
+            -Math.PI / 2 +
+            i * sliceAngle;
+
+
+          const end =
+            start +
+            sliceAngle;
+
+
+
+          /* =========================
+             SPICCHIO
+          ========================= */
+
+          ctx.beginPath();
+
+
+          ctx.moveTo(
+            center,
+            center
+          );
+
+
+          ctx.arc(
+            center,
+            center,
+            radius,
+            start,
+            end
+          );
+
+
+          ctx.closePath();
+
+
+          ctx.fillStyle =
+            colors[i];
+
+
+          ctx.fill();
+
+
+
+          /* LINEE BIANCHE */
+
+          ctx.strokeStyle =
+            "rgba(255,255,255,.9)";
+
+
+          ctx.lineWidth =
+            5;
+
+
+          ctx.stroke();
+
+
+
+          /* =========================
+             TESTO DELLO SPICCHIO
+          ========================= */
+
+          const middle =
+            start +
+            sliceAngle / 2;
+
+
+          /*
+             Posizione del testo:
+             abbastanza centrale
+             nello spicchio.
+          */
+
+          const textRadius =
+            radius * 0.62;
+
+
+          const x =
+            center +
+            Math.cos(middle) *
+            textRadius;
+
+
+          const y =
+            center +
+            Math.sin(middle) *
+            textRadius;
+
+
+
+          ctx.save();
+
+
+          ctx.translate(
+            x,
+            y
+          );
+
+
+
+          /*
+             Il testo segue la direzione
+             radiale dello spicchio.
+          */
+
+          let textRotation =
+            middle;
+
+
+
+          /*
+             Nella metà sinistra
+             lo capovolgiamo di 180°
+             per evitare scritte
+             sottosopra.
+          */
+
+          const normalized =
+            (
+              middle +
+              Math.PI * 2
+            )
+            %
+            (
+              Math.PI * 2
+            );
+
+
+          if (
+            normalized >
+            Math.PI / 2
+            &&
+            normalized <
+            Math.PI * 1.5
+          ) {
+
+            textRotation +=
+              Math.PI;
+
+          }
+
+
+          ctx.rotate(
+            textRotation
+          );
+
+
+
+          /* STILE TESTO */
+
+          ctx.fillStyle =
+            "#24152F";
+
+
+          ctx.font =
+            `900 ${prize.fontSize}px Arial`;
+
+
+          ctx.textAlign =
+            "center";
+
+
+          ctx.textBaseline =
+            "middle";
+
+
+          /*
+             Bordo bianco leggero
+             dietro le lettere:
+             aumenta molto la
+             leggibilità.
+          */
+
+          ctx.strokeStyle =
+            "rgba(255,255,255,.75)";
+
+
+          ctx.lineWidth =
+            6;
+
+
+          ctx.lineJoin =
+            "round";
+
+
+
+          const lineHeight =
+            prize.fontSize + 5;
+
+
+          const totalHeight =
+            (
+              prize.lines.length - 1
+            )
+            *
+            lineHeight;
+
+
+
+          prize.lines.forEach(
+            (line, lineIndex) => {
+
+
+              const lineY =
+                lineIndex *
+                lineHeight
+                -
+                totalHeight / 2;
+
+
+
+              ctx.strokeText(
+                line,
+                0,
+                lineY
+              );
+
+
+              ctx.fillText(
+                line,
+                0,
+                lineY
+              );
+
+            }
+          );
+
+
+          ctx.restore();
+
         }
 
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(prize, 0, 0);
-        ctx.restore();
-      });
+      );
+
+
+
+      /* =========================
+         CENTRO ROSSO
+      ========================= */
 
       ctx.beginPath();
-      ctx.arc(center, center, 54, 0, Math.PI * 2);
-      ctx.fillStyle = "#D60000";
+
+
+      ctx.arc(
+        center,
+        center,
+        56,
+        0,
+        Math.PI * 2
+      );
+
+
+      ctx.fillStyle =
+        "#D60000";
+
+
       ctx.fill();
 
+
+
+      /* CENTRO BIANCO */
+
       ctx.beginPath();
-      ctx.arc(center, center, 27, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
+
+
+      ctx.arc(
+        center,
+        center,
+        27,
+        0,
+        Math.PI * 2
+      );
+
+
+      ctx.fillStyle =
+        "white";
+
+
       ctx.fill();
+
     }
+
+
 
     drawWheel();
 
-    let rotation = 0;
-    let spinning = false;
-    let tickInterval = null;
-    let audioCtx = null;
+
+
+    /* =================================
+       STATO DELLA RUOTA
+    ================================= */
+
+    let rotation =
+      0;
+
+
+    let spinning =
+      false;
+
+
+    let tickInterval =
+      null;
+
+
+    let audioCtx =
+      null;
+
+
+
+    /* =================================
+       AUDIO
+    ================================= */
 
     function initAudio() {
+
+
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        audioCtx =
+          new (
+            window.AudioContext ||
+            window.webkitAudioContext
+          )();
+
       }
 
-      if (audioCtx.state === "suspended") {
+
+      if (
+        audioCtx.state ===
+        "suspended"
+      ) {
+
         audioCtx.resume();
+
       }
+
     }
+
+
+
+    /* =================================
+       TICCHETTIO
+    ================================= */
 
     function playTick() {
-      if (!audioCtx) return;
 
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
 
-      osc.type = "square";
-      osc.frequency.value = 900;
+      if (!audioCtx) {
+        return;
+      }
 
-      gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      const osc =
+        audioCtx.createOscillator();
+
+
+      const gain =
+        audioCtx.createGain();
+
+
+      osc.type =
+        "square";
+
+
+      osc.frequency.value =
+        900;
+
+
+      gain.gain.setValueAtTime(
+        0.025,
+        audioCtx.currentTime
+      );
+
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioCtx.currentTime +
+        0.04
+      );
+
+
+      osc.connect(
+        gain
+      );
+
+
+      gain.connect(
+        audioCtx.destination
+      );
+
 
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.04);
+
+
+      osc.stop(
+        audioCtx.currentTime +
+        0.04
+      );
+
     }
+
+
 
     function startTicking() {
+
+
       if (tickInterval) {
-        clearInterval(tickInterval);
+
+        clearInterval(
+          tickInterval
+        );
+
       }
-      tickInterval = setInterval(playTick, 140);
+
+
+      tickInterval =
+        setInterval(
+          playTick,
+          140
+        );
+
     }
+
+
 
     function stopTicking() {
+
+
       if (tickInterval) {
-        clearInterval(tickInterval);
-        tickInterval = null;
+
+
+        clearInterval(
+          tickInterval
+        );
+
+
+        tickInterval =
+          null;
+
       }
+
     }
+
+
+
+    /* =================================
+       FANFARA FINALE 🎺
+    ================================= */
 
     function playFanfare() {
-      if (!audioCtx) return;
 
-      const now = audioCtx.currentTime;
 
-      const master = audioCtx.createGain();
-      master.gain.value = 0.11;
-      master.connect(audioCtx.destination);
+      if (!audioCtx) {
+        return;
+      }
+
+
+      const now =
+        audioCtx.currentTime;
+
+
+      const master =
+        audioCtx.createGain();
+
+
+      master.gain.value =
+        0.11;
+
+
+      master.connect(
+        audioCtx.destination
+      );
+
+
 
       const notes = [
-        { freq: 523.25, time: 0.00, duration: 0.16 },
-        { freq: 659.25, time: 0.17, duration: 0.16 },
-        { freq: 783.99, time: 0.34, duration: 0.20 },
-        { freq: 1046.50, time: 0.55, duration: 0.55 }
+
+        {
+          freq: 523.25,
+          time: 0.00,
+          duration: 0.16
+        },
+
+        {
+          freq: 659.25,
+          time: 0.17,
+          duration: 0.16
+        },
+
+        {
+          freq: 783.99,
+          time: 0.34,
+          duration: 0.20
+        },
+
+        {
+          freq: 1046.50,
+          time: 0.55,
+          duration: 0.55
+        }
+
       ];
 
-      notes.forEach(note => {
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
 
-        osc1.type = "sawtooth";
-        osc2.type = "square";
-        osc1.frequency.value = note.freq;
-        osc2.frequency.value = note.freq * 1.006;
 
-        filter.type = "lowpass";
-        filter.frequency.value = 1900;
+      notes.forEach(
+        note => {
 
-        const startTime = now + note.time;
-        const stopTime = startTime + note.duration;
 
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.25, startTime + 0.025);
-        gain.gain.exponentialRampToValueAtTime(0.001, stopTime);
+          const osc1 =
+            audioCtx.createOscillator();
 
-        osc1.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gain);
-        gain.connect(master);
 
-        osc1.start(startTime);
-        osc2.start(startTime);
-        osc1.stop(stopTime);
-        osc2.stop(stopTime);
-      });
+          const osc2 =
+            audioCtx.createOscillator();
 
-      const finalChord = [523.25, 659.25, 783.99];
 
-      finalChord.forEach(freq => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+          const gain =
+            audioCtx.createGain();
 
-        osc.type = "sawtooth";
-        osc.frequency.value = freq * 2;
 
-        const startTime = now + 0.78;
-        const stopTime = now + 1.35;
+          const filter =
+            audioCtx.createBiquadFilter();
 
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, stopTime);
 
-        osc.connect(gain);
-        gain.connect(master);
 
-        osc.start(startTime);
-        osc.stop(stopTime);
-      });
+          osc1.type =
+            "sawtooth";
+
+
+          osc2.type =
+            "square";
+
+
+          osc1.frequency.value =
+            note.freq;
+
+
+          osc2.frequency.value =
+            note.freq * 1.006;
+
+
+
+          filter.type =
+            "lowpass";
+
+
+          filter.frequency.value =
+            1900;
+
+
+
+          const startTime =
+            now +
+            note.time;
+
+
+          const stopTime =
+            startTime +
+            note.duration;
+
+
+
+          gain.gain.setValueAtTime(
+            0.001,
+            startTime
+          );
+
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.25,
+            startTime +
+            0.025
+          );
+
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            stopTime
+          );
+
+
+
+          osc1.connect(
+            filter
+          );
+
+
+          osc2.connect(
+            filter
+          );
+
+
+          filter.connect(
+            gain
+          );
+
+
+          gain.connect(
+            master
+          );
+
+
+
+          osc1.start(
+            startTime
+          );
+
+
+          osc2.start(
+            startTime
+          );
+
+
+          osc1.stop(
+            stopTime
+          );
+
+
+          osc2.stop(
+            stopTime
+          );
+
+        }
+
+      );
+
+
+
+      /* ACCORDO FINALE */
+
+      const finalChord = [
+
+        523.25,
+
+        659.25,
+
+        783.99
+
+      ];
+
+
+
+      finalChord.forEach(
+        freq => {
+
+
+          const osc =
+            audioCtx.createOscillator();
+
+
+          const gain =
+            audioCtx.createGain();
+
+
+          osc.type =
+            "sawtooth";
+
+
+          osc.frequency.value =
+            freq * 2;
+
+
+
+          const startTime =
+            now + 0.78;
+
+
+          const stopTime =
+            now + 1.35;
+
+
+
+          gain.gain.setValueAtTime(
+            0.001,
+            startTime
+          );
+
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.12,
+            startTime +
+            0.03
+          );
+
+
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            stopTime
+          );
+
+
+
+          osc.connect(
+            gain
+          );
+
+
+          gain.connect(
+            master
+          );
+
+
+          osc.start(
+            startTime
+          );
+
+
+          osc.stop(
+            stopTime
+          );
+
+        }
+
+      );
+
     }
+
+
+
+    /* =================================
+       CORIANDOLI 🎊
+    ================================= */
 
     function launchConfetti() {
+
+
       const confettiColors = [
+
         "#C9A7FF",
+
         "#A8E600",
+
         "#FFD93D",
+
         "#26D9D1",
+
         "#D60000",
+
         "#FFFFFF"
+
       ];
 
-      for (let i = 0; i < 150; i++) {
-        const el = document.createElement("div");
-        el.className = "confetti";
 
-        el.style.left = Math.random() * 100 + "vw";
-        el.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
-        el.style.animationDuration = (2 + Math.random() * 2) + "s";
-        el.style.animationDelay = (Math.random() * 0.35) + "s";
-        el.style.width = (7 + Math.random() * 7) + "px";
-        el.style.height = (11 + Math.random() * 9) + "px";
 
-        document.body.appendChild(el);
+      for (
+        let i = 0;
+        i < 150;
+        i++
+      ) {
 
-        setTimeout(() => {
-          el.remove();
-        }, 5000);
+
+        const el =
+          document.createElement(
+            "div"
+          );
+
+
+        el.className =
+          "confetti";
+
+
+        el.style.left =
+          Math.random() *
+          100 +
+          "vw";
+
+
+        el.style.backgroundColor =
+          confettiColors[
+            Math.floor(
+              Math.random() *
+              confettiColors.length
+            )
+          ];
+
+
+        el.style.animationDuration =
+          (
+            2 +
+            Math.random() * 2
+          )
+          +
+          "s";
+
+
+        el.style.animationDelay =
+          (
+            Math.random() *
+            0.35
+          )
+          +
+          "s";
+
+
+        el.style.width =
+          (
+            7 +
+            Math.random() * 7
+          )
+          +
+          "px";
+
+
+        el.style.height =
+          (
+            11 +
+            Math.random() * 9
+          )
+          +
+          "px";
+
+
+        document.body.appendChild(
+          el
+        );
+
+
+        setTimeout(
+          () => {
+
+            el.remove();
+
+          },
+          5000
+        );
+
       }
+
     }
+
+
+
+    /* =================================
+       GIRA LA RUOTA
+    ================================= */
 
     function spin() {
-      if (spinning) return;
+
+
+      if (spinning) {
+        return;
+      }
+
 
       initAudio();
-      spinning = true;
 
-      const button = document.getElementById("spinButton");
-      const result = document.getElementById("result");
 
-      button.disabled = true;
-      result.innerHTML = "";
+      spinning =
+        true;
+
+
+
+      const button =
+        document.getElementById(
+          "spinButton"
+        );
+
+
+      const result =
+        document.getElementById(
+          "result"
+        );
+
+
+
+      button.disabled =
+        true;
+
+
+      result.innerHTML =
+        "";
+
+
 
       /*
-        Indice della casella vincente:
-        0 = Un abbraccio
-        1 = Uno spritz
-        2 = 110€ su TicketOne
+        INDICE DEL PREMIO VINCENTE
+
+        0 = UN ABBRACCIO
+        1 = UNO SPRITZ
+        2 = 110€ SU TICKETONE
+        3 = UN BANJO
+        4 = LA SETTIMANA ENIGMISTICA
+        5 = 200€ CASH
+        6 = INGRESSO AL CINEMA
+        7 = 5€
+
+        La ruota finirà SEMPRE
+        sul numero 2.
       */
-      const targetIndex = 2;
 
-      const sliceDegrees = 45;
-      const centerAngle = 22.5 + targetIndex * sliceDegrees;
+      const targetIndex =
+        2;
 
-      const randomOffset = Math.random() * 20 - 10;
-      const targetAngle = centerAngle + randomOffset;
 
-      const desiredRotation = (360 - targetAngle) % 360;
-      const currentPosition = ((rotation % 360) + 360) % 360;
-      const correction = (desiredRotation - currentPosition + 360) % 360;
 
-      const fullSpins = 6 + Math.floor(Math.random() * 3);
+      const sliceDegrees =
+        45;
 
-      rotation += fullSpins * 360 + correction;
+
+
+      const centerAngle =
+        22.5 +
+        targetIndex *
+        sliceDegrees;
+
+
+
+      /*
+        Piccola variazione casuale
+        all'interno dello spicchio.
+
+        Non finisce quindi sempre
+        esattamente nello stesso punto.
+      */
+
+      const randomOffset =
+        Math.random() *
+        18 -
+        9;
+
+
+
+      const targetAngle =
+        centerAngle +
+        randomOffset;
+
+
+
+      const desiredRotation =
+        (
+          360 -
+          targetAngle
+        )
+        %
+        360;
+
+
+
+      const currentPosition =
+        (
+          (
+            rotation %
+            360
+          )
+          +
+          360
+        )
+        %
+        360;
+
+
+
+      const correction =
+        (
+          desiredRotation -
+          currentPosition +
+          360
+        )
+        %
+        360;
+
+
+
+      /*
+        6, 7 oppure 8 giri completi
+        scelti casualmente.
+      */
+
+      const fullSpins =
+        6 +
+        Math.floor(
+          Math.random() *
+          3
+        );
+
+
+
+      rotation +=
+        fullSpins *
+        360
+        +
+        correction;
+
+
+
+      /* TICCHETTIO */
 
       startTicking();
-      canvas.style.transform = `rotate(${rotation}deg)`;
 
-      setTimeout(() => {
-        stopTicking();
-        playFanfare();
-        launchConfetti();
 
-        result.innerHTML = "🎉 HAI VINTO 110€ SU TICKETONE! 🎉";
 
-        button.disabled = false;
-        spinning = false;
-      }, 5100);
+      /* ROTAZIONE */
+
+      canvas.style.transform =
+        `rotate(${rotation}deg)`;
+
+
+
+      /* =========================
+         VITTORIA
+      ========================= */
+
+      setTimeout(
+        () => {
+
+
+          stopTicking();
+
+
+          playFanfare();
+
+
+          launchConfetti();
+
+
+
+          result.innerHTML =
+            "🎉 HAI VINTO 110€ SU TICKETONE! 🎉";
+
+
+
+          button.disabled =
+            false;
+
+
+          spinning =
+            false;
+
+
+        },
+
+        5100
+
+      );
+
     }
+
+
   </script>
 
+
 </body>
+
 </html>
