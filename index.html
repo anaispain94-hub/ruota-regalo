@@ -2,1482 +2,440 @@
 <html lang="it">
 
 <head>
-
   <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>La Ruota della Fortuna 🎁</title>
 
-
   <style>
-
     * {
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
-
       min-height: 100vh;
-
       display: flex;
       flex-direction: column;
-
       align-items: center;
       justify-content: center;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+      font-family: Arial, Helvetica, sans-serif;
       background: #fff7f5;
-
       color: #222;
-
       overflow-x: hidden;
-
     }
-
 
     h1 {
-
       margin: 0 20px 35px;
-
       text-align: center;
-
       font-size: 32px;
-
     }
-
-
-
-    /* =========================
-       CONTENITORE RUOTA
-    ========================= */
 
     .wheel-container {
-
       position: relative;
-
       width: 350px;
       height: 350px;
-
     }
 
-
-
-    /* =========================
-       RUOTA
-    ========================= */
-
     #wheel {
-
       width: 350px;
       height: 350px;
-
       border-radius: 50%;
-
       border: 14px solid #D60000;
-
       box-shadow:
         0 7px 18px rgba(0,0,0,.25),
         inset 0 0 0 3px rgba(255,255,255,.35);
-
-      transition:
-        transform 5s cubic-bezier(.12,.70,.15,1);
-
+      transition: transform 5s cubic-bezier(.12,.70,.15,1);
     }
 
-
-
-    /* =========================
-       FRECCIA BIANCA
-    ========================= */
-
     .pointer {
-
       position: absolute;
-
       top: -24px;
       left: 50%;
-
       transform: translateX(-50%);
-
       z-index: 10;
-
       width: 0;
       height: 0;
-
       border-left: 22px solid transparent;
       border-right: 22px solid transparent;
-
       border-top: 43px solid white;
-
       filter:
         drop-shadow(0px 2px 1px #D60000)
         drop-shadow(0px 3px 3px rgba(0,0,0,.35));
-
     }
-
-
-
-    /* =========================
-       PULSANTE
-    ========================= */
 
     button {
-
       margin-top: 45px;
-
       padding: 16px 42px;
-
       border: 0;
-
       border-radius: 100px;
-
       background: #D60000;
-
       color: white;
-
       font-size: 20px;
-
       font-weight: bold;
-
       cursor: pointer;
-
-      box-shadow:
-        0 5px 10px rgba(0,0,0,.2);
-
-      transition:
-        transform .15s;
-
+      box-shadow: 0 5px 10px rgba(0,0,0,.2);
+      transition: transform .15s;
     }
-
 
     button:hover {
-
       transform: scale(1.05);
-
     }
-
 
     button:active {
-
       transform: scale(.97);
-
     }
-
 
     button:disabled {
-
       opacity: .6;
-
       cursor: default;
-
     }
-
-
-
-    /* =========================
-       RISULTATO
-    ========================= */
 
     #result {
-
       min-height: 50px;
-
       margin-top: 28px;
-
       font-size: 28px;
-
       font-weight: 900;
-
       color: #D60000;
-
       text-align: center;
-
       padding: 0 20px;
-
     }
-
-
-
-    /* =========================
-       CORIANDOLI
-    ========================= */
 
     .confetti {
-
       position: fixed;
-
       top: -20px;
-
       width: 10px;
       height: 16px;
-
       opacity: 0.95;
-
-      animation:
-        fall linear forwards;
-
+      animation: fall linear forwards;
       z-index: 9999;
-
       pointer-events: none;
-
     }
-
 
     @keyframes fall {
-
       0% {
-
-        transform:
-          translateY(0)
-          rotate(0deg);
-
+        transform: translateY(0) rotate(0deg);
       }
-
-
       100% {
-
-        transform:
-          translateY(110vh)
-          rotate(720deg);
-
+        transform: translateY(110vh) rotate(720deg);
       }
-
     }
-
-
-
-    /* VERSIONE MOBILE */
 
     @media (max-width: 420px) {
-
       h1 {
-
         font-size: 26px;
-
       }
-
 
       .wheel-container {
-
         width: 320px;
         height: 320px;
-
       }
-
 
       #wheel {
-
         width: 320px;
         height: 320px;
-
       }
-
     }
-
   </style>
-
 </head>
-
-
 
 <body>
 
-
   <h1>🎁 GIRA LA RUOTA 🎁</h1>
 
-
   <div class="wheel-container">
-
     <div class="pointer"></div>
-
-    <canvas
-      id="wheel"
-      width="700"
-      height="700">
-    </canvas>
-
+    <canvas id="wheel" width="700" height="700"></canvas>
   </div>
 
-
-  <button
-    id="spinButton"
-    onclick="spin()">
-
-    GIRA!
-
-  </button>
-
+  <button id="spinButton" onclick="spin()">GIRA!</button>
 
   <div id="result"></div>
 
-
-
   <script>
-
-
-    /* =================================
-       PREMI
-    ================================= */
-
     const prizes = [
-
-      "104€",
-
-      "200€",
-
       "Un abbraccio",
-
-      "Pat-Pat",
-
-      "Miao",
-
-      "200€",
-
-      "Cena fuori",
-
-      "5€"
-
+      "Uno spritz",
+      "110€ su TicketOne",
+      "Un banjo",
+      "La settimana enigmistica",
+      "200€ cash",
+      "Ingresso al cinema",
+      "5€ spicci"
     ];
-
-
-
-    /* =================================
-       COLORI
-
-       2 lilla
-       2 verde mela
-       2 gialli
-       2 turchesi
-    ================================= */
 
     const colors = [
-
       "#C9A7FF", // lilla
-
       "#A8E600", // verde mela
-
       "#FFD93D", // giallo
-
       "#26D9D1", // turchese
-
       "#B79AFF", // lilla 2
-
       "#C7F000", // verde mela 2
-
       "#FFCA28", // giallo 2
-
       "#57DCE2"  // turchese 2
-
     ];
 
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
 
-
-    /* =================================
-       CANVAS
-    ================================= */
-
-    const canvas =
-      document.getElementById("wheel");
-
-
-    const ctx =
-      canvas.getContext("2d");
-
-
-    const size =
-      canvas.width;
-
-
-    const center =
-      size / 2;
-
-
-    const radius =
-      center;
-
-
-    const sliceAngle =
-      (Math.PI * 2) /
-      prizes.length;
-
-
-
-    /* =================================
-       DISEGNA LA RUOTA
-    ================================= */
+    const size = canvas.width;
+    const center = size / 2;
+    const radius = center;
+    const sliceAngle = (Math.PI * 2) / prizes.length;
 
     function drawWheel() {
-
-
-      ctx.clearRect(
-        0,
-        0,
-        size,
-        size
-      );
-
-
-      prizes.forEach(
-        (prize, i) => {
-
-
-          const start =
-
-            -Math.PI / 2 +
-
-            i * sliceAngle;
-
-
-          const end =
-
-            start +
-
-            sliceAngle;
-
-
-
-          /* SPICCHIO */
-
-          ctx.beginPath();
-
-
-          ctx.moveTo(
-            center,
-            center
-          );
-
-
-          ctx.arc(
-            center,
-            center,
-            radius,
-            start,
-            end
-          );
-
-
-          ctx.closePath();
-
-
-          ctx.fillStyle =
-            colors[i];
-
-
-          ctx.fill();
-
-
-
-          /* LINEE BIANCHE TRA GLI SPICCHI */
-
-          ctx.strokeStyle =
-            "rgba(255,255,255,.85)";
-
-
-          ctx.lineWidth =
-            5;
-
-
-          ctx.stroke();
-
-
-
-          /* TESTO */
-
-          const middle =
-
-            start +
-
-            sliceAngle / 2;
-
-
-          const textRadius =
-
-            radius * 0.64;
-
-
-          const x =
-
-            center +
-
-            Math.cos(middle) *
-
-            textRadius;
-
-
-          const y =
-
-            center +
-
-            Math.sin(middle) *
-
-            textRadius;
-
-
-
-          ctx.save();
-
-
-          ctx.translate(
-            x,
-            y
-          );
-
-
-          ctx.shadowColor =
-            "rgba(255,255,255,.8)";
-
-
-          ctx.shadowBlur =
-            8;
-
-
-          ctx.fillStyle =
-            "#24152F";
-
-
-          ctx.font =
-
-            prize.length > 10
-
-            ? "bold 28px Arial"
-
-            : "bold 34px Arial";
-
-
-          ctx.textAlign =
-            "center";
-
-
-          ctx.textBaseline =
-            "middle";
-
-
-          ctx.fillText(
-            prize,
-            0,
-            0
-          );
-
-
-          ctx.restore();
-
+      ctx.clearRect(0, 0, size, size);
+
+      prizes.forEach((prize, i) => {
+        const start = -Math.PI / 2 + i * sliceAngle;
+        const end = start + sliceAngle;
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.85)";
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        const middle = start + sliceAngle / 2;
+        const textRadius = radius * 0.64;
+        const x = center + Math.cos(middle) * textRadius;
+        const y = center + Math.sin(middle) * textRadius;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.shadowColor = "rgba(255,255,255,.8)";
+        ctx.shadowBlur = 8;
+        ctx.fillStyle = "#24152F";
+
+        if (prize.length > 22) {
+          ctx.font = "bold 22px Arial";
+        } else if (prize.length > 14) {
+          ctx.font = "bold 25px Arial";
+        } else {
+          ctx.font = "bold 30px Arial";
         }
 
-      );
-
-
-
-      /* CERCHIO ROSSO CENTRALE */
-
-      ctx.beginPath();
-
-
-      ctx.arc(
-        center,
-        center,
-        54,
-        0,
-        Math.PI * 2
-      );
-
-
-      ctx.fillStyle =
-        "#D60000";
-
-
-      ctx.fill();
-
-
-
-      /* CERCHIO BIANCO INTERNO */
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(prize, 0, 0);
+        ctx.restore();
+      });
 
       ctx.beginPath();
-
-
-      ctx.arc(
-        center,
-        center,
-        27,
-        0,
-        Math.PI * 2
-      );
-
-
-      ctx.fillStyle =
-        "white";
-
-
+      ctx.arc(center, center, 54, 0, Math.PI * 2);
+      ctx.fillStyle = "#D60000";
       ctx.fill();
 
+      ctx.beginPath();
+      ctx.arc(center, center, 27, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
     }
-
-
 
     drawWheel();
 
-
-
-    /* =================================
-       STATO DELLA RUOTA
-    ================================= */
-
     let rotation = 0;
-
     let spinning = false;
-
     let tickInterval = null;
-
-
-
-    /* =================================
-       AUDIO
-
-       Usiamo un solo AudioContext
-       per tutti i suoni.
-    ================================= */
-
     let audioCtx = null;
 
-
     function initAudio() {
-
-
       if (!audioCtx) {
-
-        audioCtx =
-
-          new (
-
-            window.AudioContext ||
-
-            window.webkitAudioContext
-
-          )();
-
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
 
-
-      if (
-        audioCtx.state ===
-        "suspended"
-      ) {
-
+      if (audioCtx.state === "suspended") {
         audioCtx.resume();
-
       }
-
     }
-
-
-
-    /* =================================
-       TIC DELLA RUOTA
-    ================================= */
 
     function playTick() {
-
-
       if (!audioCtx) return;
 
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-      const osc =
-        audioCtx.createOscillator();
+      osc.type = "square";
+      osc.frequency.value = 900;
 
-
-      const gain =
-        audioCtx.createGain();
-
-
-      osc.type =
-        "square";
-
-
-      osc.frequency.value =
-        900;
-
-
-      gain.gain.setValueAtTime(
-        0.025,
-        audioCtx.currentTime
-      );
-
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        audioCtx.currentTime + 0.04
-      );
-
+      gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
 
       osc.connect(gain);
-
-
-      gain.connect(
-        audioCtx.destination
-      );
-
+      gain.connect(audioCtx.destination);
 
       osc.start();
-
-
-      osc.stop(
-        audioCtx.currentTime +
-        0.04
-      );
-
+      osc.stop(audioCtx.currentTime + 0.04);
     }
-
-
 
     function startTicking() {
-
-
       if (tickInterval) {
-
-        clearInterval(
-          tickInterval
-        );
-
+        clearInterval(tickInterval);
       }
-
-
-      tickInterval =
-        setInterval(
-          playTick,
-          140
-        );
-
+      tickInterval = setInterval(playTick, 140);
     }
-
-
 
     function stopTicking() {
-
-
       if (tickInterval) {
-
-
-        clearInterval(
-          tickInterval
-        );
-
-
-        tickInterval =
-          null;
-
+        clearInterval(tickInterval);
+        tickInterval = null;
       }
-
     }
-
-
-
-    /* =================================
-       FANFARA FINALE 🎺
-
-       Piccolo effetto "trombette"
-       creato direttamente dal browser.
-    ================================= */
 
     function playFanfare() {
-
-
       if (!audioCtx) return;
 
+      const now = audioCtx.currentTime;
 
-      const now =
-        audioCtx.currentTime;
-
-
-      const master =
-        audioCtx.createGain();
-
-
-      master.gain.value =
-        0.11;
-
-
-      master.connect(
-        audioCtx.destination
-      );
-
-
-
-      /*
-        Sequenza:
-        Do - Mi - Sol -
-        Do alto + accordo finale
-      */
+      const master = audioCtx.createGain();
+      master.gain.value = 0.11;
+      master.connect(audioCtx.destination);
 
       const notes = [
-
-        {
-          freq: 523.25,
-          time: 0.00,
-          duration: 0.16
-        },
-
-        {
-          freq: 659.25,
-          time: 0.17,
-          duration: 0.16
-        },
-
-        {
-          freq: 783.99,
-          time: 0.34,
-          duration: 0.20
-        },
-
-        {
-          freq: 1046.50,
-          time: 0.55,
-          duration: 0.55
-        }
-
+        { freq: 523.25, time: 0.00, duration: 0.16 },
+        { freq: 659.25, time: 0.17, duration: 0.16 },
+        { freq: 783.99, time: 0.34, duration: 0.20 },
+        { freq: 1046.50, time: 0.55, duration: 0.55 }
       ];
 
-
-
-      notes.forEach(
-        note => {
-
-
-          const osc1 =
-            audioCtx.createOscillator();
-
-
-          const osc2 =
-            audioCtx.createOscillator();
-
-
-          const gain =
-            audioCtx.createGain();
-
-
-          const filter =
-            audioCtx.createBiquadFilter();
-
-
-
-          /*
-            Sawtooth + square
-            danno un timbro più
-            simile a una trombetta.
-          */
-
-          osc1.type =
-            "sawtooth";
-
-
-          osc2.type =
-            "square";
-
-
-          osc1.frequency.value =
-            note.freq;
-
-
-          osc2.frequency.value =
-            note.freq * 1.006;
-
-
-
-          filter.type =
-            "lowpass";
-
-
-          filter.frequency.value =
-            1900;
-
-
-
-          const startTime =
-
-            now +
-
-            note.time;
-
-
-          const stopTime =
-
-            startTime +
-
-            note.duration;
-
-
-
-          gain.gain.setValueAtTime(
-            0.001,
-            startTime
-          );
-
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.25,
-            startTime + 0.025
-          );
-
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            stopTime
-          );
-
-
-
-          osc1.connect(
-            filter
-          );
-
-
-          osc2.connect(
-            filter
-          );
-
-
-          filter.connect(
-            gain
-          );
-
-
-          gain.connect(
-            master
-          );
-
-
-
-          osc1.start(
-            startTime
-          );
-
-
-          osc2.start(
-            startTime
-          );
-
-
-          osc1.stop(
-            stopTime
-          );
-
-
-          osc2.stop(
-            stopTime
-          );
-
-        }
-
-      );
-
-
-
-      /*
-        ACCORDO FINALE
-        per dare un effetto
-        "TA-DAAA!"
-      */
-
-      const finalChord = [
-
-        523.25,
-        659.25,
-        783.99
-
-      ];
-
-
-      finalChord.forEach(
-        freq => {
-
-
-          const osc =
-            audioCtx.createOscillator();
-
-
-          const gain =
-            audioCtx.createGain();
-
-
-          osc.type =
-            "sawtooth";
-
-
-          osc.frequency.value =
-            freq * 2;
-
-
-          const startTime =
-            now + 0.78;
-
-
-          const stopTime =
-            now + 1.35;
-
-
-          gain.gain.setValueAtTime(
-            0.001,
-            startTime
-          );
-
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.12,
-            startTime + 0.03
-          );
-
-
-          gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            stopTime
-          );
-
-
-          osc.connect(
-            gain
-          );
-
-
-          gain.connect(
-            master
-          );
-
-
-          osc.start(
-            startTime
-          );
-
-
-          osc.stop(
-            stopTime
-          );
-
-        }
-
-      );
-
+      notes.forEach(note => {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc1.type = "sawtooth";
+        osc2.type = "square";
+        osc1.frequency.value = note.freq;
+        osc2.frequency.value = note.freq * 1.006;
+
+        filter.type = "lowpass";
+        filter.frequency.value = 1900;
+
+        const startTime = now + note.time;
+        const stopTime = startTime + note.duration;
+
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.25, startTime + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.001, stopTime);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(stopTime);
+        osc2.stop(stopTime);
+      });
+
+      const finalChord = [523.25, 659.25, 783.99];
+
+      finalChord.forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sawtooth";
+        osc.frequency.value = freq * 2;
+
+        const startTime = now + 0.78;
+        const stopTime = now + 1.35;
+
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, stopTime);
+
+        osc.connect(gain);
+        gain.connect(master);
+
+        osc.start(startTime);
+        osc.stop(stopTime);
+      });
     }
-
-
-
-    /* =================================
-       CORIANDOLI 🎊
-    ================================= */
 
     function launchConfetti() {
-
-
       const confettiColors = [
-
         "#C9A7FF",
-
         "#A8E600",
-
         "#FFD93D",
-
         "#26D9D1",
-
         "#D60000",
-
         "#FFFFFF"
-
       ];
 
+      for (let i = 0; i < 150; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
 
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        el.style.animationDuration = (2 + Math.random() * 2) + "s";
+        el.style.animationDelay = (Math.random() * 0.35) + "s";
+        el.style.width = (7 + Math.random() * 7) + "px";
+        el.style.height = (11 + Math.random() * 9) + "px";
 
-      for (
-        let i = 0;
-        i < 150;
-        i++
-      ) {
+        document.body.appendChild(el);
 
-
-        const el =
-          document.createElement(
-            "div"
-          );
-
-
-        el.className =
-          "confetti";
-
-
-        el.style.left =
-
-          Math.random() *
-          100 +
-
-          "vw";
-
-
-        el.style.backgroundColor =
-
-          confettiColors[
-
-            Math.floor(
-
-              Math.random() *
-
-              confettiColors.length
-
-            )
-
-          ];
-
-
-        el.style.animationDuration =
-
-          (
-            2 +
-
-            Math.random() * 2
-
-          ) +
-
-          "s";
-
-
-        el.style.animationDelay =
-
-          (
-            Math.random() *
-            0.35
-
-          ) +
-
-          "s";
-
-
-        el.style.width =
-
-          (
-            7 +
-
-            Math.random() *
-            7
-
-          ) +
-
-          "px";
-
-
-        el.style.height =
-
-          (
-            11 +
-
-            Math.random() *
-            9
-
-          ) +
-
-          "px";
-
-
-        document.body.appendChild(
-          el
-        );
-
-
-
-        setTimeout(
-
-          () => {
-
-            el.remove();
-
-          },
-
-          5000
-
-        );
-
+        setTimeout(() => {
+          el.remove();
+        }, 5000);
       }
-
     }
-
-
-
-    /* =================================
-       GIRA LA RUOTA
-    ================================= */
 
     function spin() {
-
-
-      if (spinning) {
-
-        return;
-
-      }
-
-
-      /*
-        Il click dell'utente
-        abilita l'audio sul telefono.
-      */
+      if (spinning) return;
 
       initAudio();
+      spinning = true;
 
+      const button = document.getElementById("spinButton");
+      const result = document.getElementById("result");
 
-      spinning =
-        true;
-
-
-
-      const button =
-
-        document.getElementById(
-          "spinButton"
-        );
-
-
-      const result =
-
-        document.getElementById(
-          "result"
-        );
-
-
-
-      button.disabled =
-        true;
-
-
-      result.innerHTML =
-        "";
-
-
+      button.disabled = true;
+      result.innerHTML = "";
 
       /*
-        Gli indici 1 e 5
-        corrispondono alle
-        due caselle da 200€.
+        Indice della casella vincente:
+        0 = Un abbraccio
+        1 = Uno spritz
+        2 = 110€ su TicketOne
       */
+      const targetIndex = 2;
 
-      const winningSlices = [
+      const sliceDegrees = 45;
+      const centerAngle = 22.5 + targetIndex * sliceDegrees;
 
-        1,
-        5
+      const randomOffset = Math.random() * 20 - 10;
+      const targetAngle = centerAngle + randomOffset;
 
-      ];
+      const desiredRotation = (360 - targetAngle) % 360;
+      const currentPosition = ((rotation % 360) + 360) % 360;
+      const correction = (desiredRotation - currentPosition + 360) % 360;
 
+      const fullSpins = 6 + Math.floor(Math.random() * 3);
 
-
-      /*
-        Sceglie CASUALMENTE
-        quale dei due 200€
-        raggiungere.
-      */
-
-      const targetIndex =
-
-        winningSlices[
-
-          Math.floor(
-
-            Math.random() *
-
-            winningSlices.length
-
-          )
-
-        ];
-
-
-
-      /*
-        8 spicchi =
-        45° ciascuno.
-      */
-
-      const sliceDegrees =
-        45;
-
-
-
-      const centerAngle =
-
-        22.5 +
-
-        targetIndex *
-
-        sliceDegrees;
-
-
-
-      /*
-        Varia leggermente
-        la posizione finale
-        dentro lo spicchio.
-      */
-
-      const randomOffset =
-
-        Math.random() *
-        20 -
-
-        10;
-
-
-
-      const targetAngle =
-
-        centerAngle +
-
-        randomOffset;
-
-
-
-      /*
-        Rotazione necessaria
-        per mettere il 200€
-        sotto la freccia.
-      */
-
-      const desiredRotation =
-
-        (
-          360 -
-
-          targetAngle
-        )
-
-        % 360;
-
-
-
-      const currentPosition =
-
-        (
-          (
-            rotation %
-            360
-          )
-
-          + 360
-
-        )
-
-        % 360;
-
-
-
-      const correction =
-
-        (
-          desiredRotation -
-
-          currentPosition +
-
-          360
-        )
-
-        % 360;
-
-
-
-      /*
-        Numero casuale
-        di giri completi:
-        6, 7 oppure 8.
-      */
-
-      const fullSpins =
-
-        6 +
-
-        Math.floor(
-
-          Math.random() *
-          3
-
-        );
-
-
-
-      rotation +=
-
-        fullSpins *
-        360 +
-
-        correction;
-
-
-
-      /* parte il ticchettio */
+      rotation += fullSpins * 360 + correction;
 
       startTicking();
+      canvas.style.transform = `rotate(${rotation}deg)`;
 
+      setTimeout(() => {
+        stopTicking();
+        playFanfare();
+        launchConfetti();
 
+        result.innerHTML = "🎉 HAI VINTO 110€ SU TICKETONE! 🎉";
 
-      /* parte la rotazione */
-
-      canvas.style.transform =
-
-        `rotate(${rotation}deg)`;
-
-
-
-      /*
-        DOPO 5 SECONDI:
-        vittoria!
-      */
-
-      setTimeout(
-        () => {
-
-
-          stopTicking();
-
-
-          /*
-            FANFARA + CORIANDOLI
-            INSIEME
-          */
-
-          playFanfare();
-
-
-          launchConfetti();
-
-
-
-          result.innerHTML =
-
-            "🎉 HAI VINTO 200€! 🎉";
-
-
-
-          button.disabled =
-            false;
-
-
-          spinning =
-            false;
-
-
-        },
-
-        5100
-
-      );
-
+        button.disabled = false;
+        spinning = false;
+      }, 5100);
     }
-
-
   </script>
 
-
 </body>
-
 </html>
