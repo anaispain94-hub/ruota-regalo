@@ -2,7 +2,6 @@
 <html lang="it">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,34 +11,28 @@
 
   <title>LA RUOTA DELLA FORTUNA 🎁</title>
 
-
   <style>
 
     * {
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
-
       min-height: 100vh;
 
       display: flex;
       flex-direction: column;
-
       align-items: center;
       justify-content: center;
 
       font-family: Arial, Helvetica, sans-serif;
 
       background: #fff7f5;
-
       color: #222;
 
       overflow-x: hidden;
     }
-
 
     h1 {
       margin: 0 20px 35px;
@@ -47,10 +40,8 @@
       text-align: center;
 
       font-size: 32px;
-
       font-weight: 900;
     }
-
 
     /* =========================
        CONTENITORE RUOTA
@@ -62,7 +53,6 @@
       width: 350px;
       height: 350px;
     }
-
 
     /* =========================
        RUOTA
@@ -83,7 +73,6 @@
       transition:
         transform 5s cubic-bezier(.12,.70,.15,1);
     }
-
 
     /* =========================
        FRECCIA BIANCA
@@ -112,7 +101,6 @@
         drop-shadow(0px 3px 3px rgba(0,0,0,.35));
     }
 
-
     /* =========================
        PULSANTE
     ========================= */
@@ -123,15 +111,12 @@
       padding: 16px 42px;
 
       border: 0;
-
       border-radius: 100px;
 
       background: #D60000;
-
       color: white;
 
       font-size: 20px;
-
       font-weight: 900;
 
       cursor: pointer;
@@ -143,46 +128,67 @@
         transform .15s;
     }
 
-
     button:hover {
       transform: scale(1.05);
     }
 
-
     button:active {
       transform: scale(.97);
     }
-
 
     button:disabled {
       opacity: .6;
       cursor: default;
     }
 
-
     /* =========================
        RISULTATO
     ========================= */
 
     #result {
-      min-height: 60px;
+      min-height: 75px;
 
       margin-top: 28px;
+
+      text-align: center;
+
+      padding: 0 20px;
+
+      color: #D60000;
+    }
+
+    .result-text-top {
+      font-size: 28px;
+
+      font-weight: 900;
+
+      line-height: 1.1;
+
+      margin-bottom: 5px;
+    }
+
+    .result-text-bottom {
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 12px;
 
       font-size: 28px;
 
       font-weight: 900;
 
-      color: #D60000;
-
-      text-align: center;
-
-      padding: 0 20px;
+      line-height: 1.1;
     }
 
+    .result-confetti {
+      font-size: 30px;
+      line-height: 1;
+    }
 
     /* =========================
-       CORIANDOLI
+       CORIANDOLI ANIMATI
     ========================= */
 
     .confetti {
@@ -203,7 +209,6 @@
       pointer-events: none;
     }
 
-
     @keyframes fall {
 
       0% {
@@ -219,7 +224,6 @@
       }
 
     }
-
 
     /* =========================
        MOBILE
@@ -241,12 +245,24 @@
         height: 320px;
       }
 
+      .result-text-top {
+        font-size: 24px;
+      }
+
+      .result-text-bottom {
+        font-size: 22px;
+        gap: 8px;
+      }
+
+      .result-confetti {
+        font-size: 26px;
+      }
+
     }
 
   </style>
 
 </head>
-
 
 <body>
 
@@ -279,16 +295,11 @@
   <div id="result"></div>
 
 
-
   <script>
 
-
-    /* =================================
+    /* =========================
        PREMI
-
-       Le scritte lunghe vengono
-       divise su due righe.
-    ================================= */
+    ========================= */
 
     const prizes = [
 
@@ -335,15 +346,9 @@
     ];
 
 
-
-    /* =================================
+    /* =========================
        COLORI
-
-       2 LILLA
-       2 VERDE MELA
-       2 GIALLI
-       2 TURCHESI
-    ================================= */
+    ========================= */
 
     const colors = [
 
@@ -355,54 +360,45 @@
 
       "#26D9D1", // turchese
 
-      "#B79AFF", // lilla
+      "#B79AFF", // lilla 2
 
-      "#C7F000", // verde mela
+      "#C7F000", // verde mela 2
 
-      "#FFCA28", // giallo
+      "#FFCA28", // giallo 2
 
-      "#57DCE2"  // turchese
+      "#57DCE2"  // turchese 2
 
     ];
 
 
-
-    /* =================================
+    /* =========================
        CANVAS
-    ================================= */
+    ========================= */
 
     const canvas =
       document.getElementById("wheel");
 
-
     const ctx =
       canvas.getContext("2d");
-
 
     const size =
       canvas.width;
 
-
     const center =
       size / 2;
-
 
     const radius =
       center;
 
-
     const sliceAngle =
-      (Math.PI * 2) /
-      prizes.length;
+      (Math.PI * 2) / prizes.length;
 
 
-
-    /* =================================
-       DISEGNA LA RUOTA
-    ================================= */
+    /* =========================
+       DISEGNA RUOTA
+    ========================= */
 
     function drawWheel() {
-
 
       ctx.clearRect(
         0,
@@ -415,30 +411,23 @@
       prizes.forEach(
         (prize, i) => {
 
-
           const start =
             -Math.PI / 2 +
             i * sliceAngle;
-
 
           const end =
             start +
             sliceAngle;
 
 
-
-          /* =========================
-             SPICCHIO
-          ========================= */
+          /* SPICCHIO */
 
           ctx.beginPath();
-
 
           ctx.moveTo(
             center,
             center
           );
-
 
           ctx.arc(
             center,
@@ -448,56 +437,40 @@
             end
           );
 
-
           ctx.closePath();
-
 
           ctx.fillStyle =
             colors[i];
 
-
           ctx.fill();
 
 
-
-          /* LINEE BIANCHE */
+          /* LINEE DIVISORIE */
 
           ctx.strokeStyle =
             "rgba(255,255,255,.9)";
 
-
           ctx.lineWidth =
             5;
-
 
           ctx.stroke();
 
 
-
           /* =========================
-             TESTO DELLO SPICCHIO
+             TESTO
           ========================= */
 
           const middle =
             start +
             sliceAngle / 2;
 
-
-          /*
-             Posizione del testo:
-             abbastanza centrale
-             nello spicchio.
-          */
-
           const textRadius =
             radius * 0.62;
-
 
           const x =
             center +
             Math.cos(middle) *
             textRadius;
-
 
           const y =
             center +
@@ -505,9 +478,7 @@
             textRadius;
 
 
-
           ctx.save();
-
 
           ctx.translate(
             x,
@@ -515,22 +486,18 @@
           );
 
 
-
           /*
-             Il testo segue la direzione
-             radiale dello spicchio.
+            Il testo segue
+            la direzione dello spicchio.
           */
 
           let textRotation =
             middle;
 
 
-
           /*
-             Nella metà sinistra
-             lo capovolgiamo di 180°
-             per evitare scritte
-             sottosopra.
+            Evita le scritte
+            completamente capovolte.
           */
 
           const normalized =
@@ -545,11 +512,8 @@
 
 
           if (
-            normalized >
-            Math.PI / 2
-            &&
-            normalized <
-            Math.PI * 1.5
+            normalized > Math.PI / 2 &&
+            normalized < Math.PI * 1.5
           ) {
 
             textRotation +=
@@ -562,9 +526,6 @@
             textRotation
           );
 
-
-
-          /* STILE TESTO */
 
           ctx.fillStyle =
             "#24152F";
@@ -583,14 +544,13 @@
 
 
           /*
-             Bordo bianco leggero
-             dietro le lettere:
-             aumenta molto la
-             leggibilità.
+            Bordino bianco
+            per rendere il testo
+            più leggibile.
           */
 
           ctx.strokeStyle =
-            "rgba(255,255,255,.75)";
+            "rgba(255,255,255,.8)";
 
 
           ctx.lineWidth =
@@ -599,7 +559,6 @@
 
           ctx.lineJoin =
             "round";
-
 
 
           const lineHeight =
@@ -614,17 +573,14 @@
             lineHeight;
 
 
-
           prize.lines.forEach(
             (line, lineIndex) => {
-
 
               const lineY =
                 lineIndex *
                 lineHeight
                 -
                 totalHeight / 2;
-
 
 
               ctx.strokeText(
@@ -647,17 +603,14 @@
           ctx.restore();
 
         }
-
       );
 
 
-
       /* =========================
-         CENTRO ROSSO
+         CENTRO RUOTA
       ========================= */
 
       ctx.beginPath();
-
 
       ctx.arc(
         center,
@@ -667,19 +620,13 @@
         Math.PI * 2
       );
 
-
       ctx.fillStyle =
         "#D60000";
-
 
       ctx.fill();
 
 
-
-      /* CENTRO BIANCO */
-
       ctx.beginPath();
-
 
       ctx.arc(
         center,
@@ -689,48 +636,35 @@
         Math.PI * 2
       );
 
-
       ctx.fillStyle =
         "white";
-
 
       ctx.fill();
 
     }
 
 
-
     drawWheel();
 
 
+    /* =========================
+       STATO
+    ========================= */
 
-    /* =================================
-       STATO DELLA RUOTA
-    ================================= */
+    let rotation = 0;
 
-    let rotation =
-      0;
+    let spinning = false;
 
+    let tickInterval = null;
 
-    let spinning =
-      false;
-
-
-    let tickInterval =
-      null;
+    let audioCtx = null;
 
 
-    let audioCtx =
-      null;
-
-
-
-    /* =================================
+    /* =========================
        AUDIO
-    ================================= */
+    ========================= */
 
     function initAudio() {
-
 
       if (!audioCtx) {
 
@@ -755,13 +689,11 @@
     }
 
 
-
-    /* =================================
+    /* =========================
        TICCHETTIO
-    ================================= */
+    ========================= */
 
     function playTick() {
-
 
       if (!audioCtx) {
         return;
@@ -818,9 +750,7 @@
     }
 
 
-
     function startTicking() {
-
 
       if (tickInterval) {
 
@@ -840,12 +770,9 @@
     }
 
 
-
     function stopTicking() {
 
-
       if (tickInterval) {
-
 
         clearInterval(
           tickInterval
@@ -860,13 +787,11 @@
     }
 
 
-
-    /* =================================
-       FANFARA FINALE 🎺
-    ================================= */
+    /* =========================
+       FANFARA 🎺
+    ========================= */
 
     function playFanfare() {
-
 
       if (!audioCtx) {
         return;
@@ -888,7 +813,6 @@
       master.connect(
         audioCtx.destination
       );
-
 
 
       const notes = [
@@ -920,10 +844,8 @@
       ];
 
 
-
       notes.forEach(
         note => {
-
 
           const osc1 =
             audioCtx.createOscillator();
@@ -939,7 +861,6 @@
 
           const filter =
             audioCtx.createBiquadFilter();
-
 
 
           osc1.type =
@@ -958,14 +879,12 @@
             note.freq * 1.006;
 
 
-
           filter.type =
             "lowpass";
 
 
           filter.frequency.value =
             1900;
-
 
 
           const startTime =
@@ -978,7 +897,6 @@
             note.duration;
 
 
-
           gain.gain.setValueAtTime(
             0.001,
             startTime
@@ -987,8 +905,7 @@
 
           gain.gain.exponentialRampToValueAtTime(
             0.25,
-            startTime +
-            0.025
+            startTime + 0.025
           );
 
 
@@ -996,7 +913,6 @@
             0.001,
             stopTime
           );
-
 
 
           osc1.connect(
@@ -1019,7 +935,6 @@
           );
 
 
-
           osc1.start(
             startTime
           );
@@ -1040,9 +955,7 @@
           );
 
         }
-
       );
-
 
 
       /* ACCORDO FINALE */
@@ -1050,18 +963,14 @@
       const finalChord = [
 
         523.25,
-
         659.25,
-
         783.99
 
       ];
 
 
-
       finalChord.forEach(
         freq => {
-
 
           const osc =
             audioCtx.createOscillator();
@@ -1079,14 +988,12 @@
             freq * 2;
 
 
-
           const startTime =
             now + 0.78;
 
 
           const stopTime =
             now + 1.35;
-
 
 
           gain.gain.setValueAtTime(
@@ -1106,7 +1013,6 @@
             0.001,
             stopTime
           );
-
 
 
           osc.connect(
@@ -1129,36 +1035,27 @@
           );
 
         }
-
       );
 
     }
 
 
-
-    /* =================================
+    /* =========================
        CORIANDOLI 🎊
-    ================================= */
+    ========================= */
 
     function launchConfetti() {
-
 
       const confettiColors = [
 
         "#C9A7FF",
-
         "#A8E600",
-
         "#FFD93D",
-
         "#26D9D1",
-
         "#D60000",
-
         "#FFFFFF"
 
       ];
-
 
 
       for (
@@ -1166,7 +1063,6 @@
         i < 150;
         i++
       ) {
-
 
         const el =
           document.createElement(
@@ -1248,13 +1144,11 @@
     }
 
 
-
-    /* =================================
-       GIRA LA RUOTA
-    ================================= */
+    /* =========================
+       GIRA
+    ========================= */
 
     function spin() {
-
 
       if (spinning) {
         return;
@@ -1266,7 +1160,6 @@
 
       spinning =
         true;
-
 
 
       const button =
@@ -1281,7 +1174,6 @@
         );
 
 
-
       button.disabled =
         true;
 
@@ -1290,9 +1182,8 @@
         "";
 
 
-
       /*
-        INDICE DEL PREMIO VINCENTE
+        PREMIO VINCENTE:
 
         0 = UN ABBRACCIO
         1 = UNO SPRITZ
@@ -1302,19 +1193,14 @@
         5 = 200€ CASH
         6 = INGRESSO AL CINEMA
         7 = 5€
-
-        La ruota finirà SEMPRE
-        sul numero 2.
       */
 
       const targetIndex =
         2;
 
 
-
       const sliceDegrees =
         45;
-
 
 
       const centerAngle =
@@ -1323,13 +1209,9 @@
         sliceDegrees;
 
 
-
       /*
         Piccola variazione casuale
-        all'interno dello spicchio.
-
-        Non finisce quindi sempre
-        esattamente nello stesso punto.
+        dentro lo spicchio.
       */
 
       const randomOffset =
@@ -1338,11 +1220,9 @@
         9;
 
 
-
       const targetAngle =
         centerAngle +
         randomOffset;
-
 
 
       const desiredRotation =
@@ -1352,7 +1232,6 @@
         )
         %
         360;
-
 
 
       const currentPosition =
@@ -1368,7 +1247,6 @@
         360;
 
 
-
       const correction =
         (
           desiredRotation -
@@ -1379,10 +1257,8 @@
         360;
 
 
-
       /*
-        6, 7 oppure 8 giri completi
-        scelti casualmente.
+        Da 6 a 8 giri.
       */
 
       const fullSpins =
@@ -1393,7 +1269,6 @@
         );
 
 
-
       rotation +=
         fullSpins *
         360
@@ -1401,18 +1276,11 @@
         correction;
 
 
-
-      /* TICCHETTIO */
-
       startTicking();
 
 
-
-      /* ROTAZIONE */
-
       canvas.style.transform =
         `rotate(${rotation}deg)`;
-
 
 
       /* =========================
@@ -1421,7 +1289,6 @@
 
       setTimeout(
         () => {
-
 
           stopTicking();
 
@@ -1432,10 +1299,29 @@
           launchConfetti();
 
 
+          result.innerHTML = `
 
-          result.innerHTML =
-            "🎉 HAI VINTO 110€ SU TICKETONE! 🎉";
+            <div class="result-text-top">
+              HAI VINTO
+            </div>
 
+            <div class="result-text-bottom">
+
+              <span class="result-confetti">
+                🎊
+              </span>
+
+              <span>
+                100€ SU TICKETONE
+              </span>
+
+              <span class="result-confetti">
+                🎊
+              </span>
+
+            </div>
+
+          `;
 
 
           button.disabled =
@@ -1445,7 +1331,6 @@
           spinning =
             false;
 
-
         },
 
         5100
@@ -1453,7 +1338,6 @@
       );
 
     }
-
 
   </script>
 
